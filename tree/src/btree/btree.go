@@ -30,6 +30,42 @@ const (
     Descending
 )
 
+// Find a node where new value can be placed
+func findNodeToInsertOnBinarySearchTree(root *BNode, v int) *BNode {
+    t := root
+    // Traverse the tree
+    for t != nil {
+        if v > t.value {
+            if t.rnode == nil {
+                break
+            } else {
+                t = t.rnode
+            }
+        } else {
+            if t.lnode == nil {
+                break
+            } else {
+                t = t.lnode
+            }
+        }
+    }
+
+    return t
+}
+
+// Insert the value v at the determined node
+func insertNodeInTreeAt(node *BNode, v int) {
+    // create new node and insert into the tree
+    n := new(BNode)
+    n.value = v
+    n.lnode, n.rnode = nil, nil
+    if v > node.value {
+        node.rnode = n
+    } else {
+        node.lnode = n
+    }
+}
+
 // CreateBTree : Create a binary search tree from a sequence of integers
 func CreateBTree(s _Sequence) (root *BNode) {
     root = nil
@@ -52,33 +88,16 @@ func CreateBTree(s _Sequence) (root *BNode) {
             if i == rindex {
                 continue
             }
-            t := root
-            // Traverse the tree
-            for t != nil {
-                if v > t.value {
-                    if t.rnode == nil {
-                        break
-                    } else {
-                        t = t.rnode
-                    }
-                } else {
-                    if t.lnode == nil {
-                        break
-                    } else {
-                        t = t.lnode
-                    }
-                }
+
+            t := findNodeToInsertOnBinarySearchTree(root, v)
+
+            if t != nil {
+                insertNodeInTreeAt(t, v)
+            } else {
+                fmt.Println("Unable to find node to insert")
+                return nil
             }
 
-            // create new node and insert into the tree
-            n := new(BNode)
-            n.value = v
-            n.lnode, n.rnode = nil, nil
-            if v > t.value {
-                t.rnode = n
-            } else {
-                t.lnode = n
-            }
         }
     } else {
         root.value = s[0]
